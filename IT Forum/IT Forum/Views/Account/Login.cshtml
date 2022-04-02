@@ -1,0 +1,31 @@
+﻿@model IT_Forum.Models.ViewModel.LoginViewModel
+
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<h1>Sign in</h1>
+
+<div>
+    <form method="post">
+        <div asp-validation-summary="ModelOnly"></div>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                <input class="input-group-text" asp-for="Email" />
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Password)
+            </dt>
+            <dd class="col-sm-10">
+                <input class="input-group-text" type="password" asp-for="Password" />
+                @Html.DisplayFor(model => model.Password)
+            </dd>
+        </dl>
+        <button class="btn btn-light border-dark" type="submit">Sign in</button>
+    </form>
+</div>
