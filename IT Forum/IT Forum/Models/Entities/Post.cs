@@ -22,5 +22,10 @@ namespace IT_Forum.Models.Entities
         public ICollection<User> Users { get; set; }
         public List<Comment> Comments { get; set; }
         public List<Like> Likes { get; set; }
+
+        public bool IsMatch(string value)
+        {
+            return Title.Contains(value);
+        }
     }
 }
