@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using IT_Forum.Models;
-using IT_Forum.Models.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -47,7 +46,7 @@ namespace IT_Forum.Controllers
                 resultList = _context.Posts.ToList();
             }
 
-            filter.ToValidOptions(resultList.Count());
+            filter.ToValidOptions(resultList.Count);
             
             var pagedData = resultList
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
@@ -57,7 +56,15 @@ namespace IT_Forum.Controllers
             {
                 pagedData.Reverse();
             }
-            // return Articles
+            var totalRecords = await _context.Posts.CountAsync();
+            var pagedResponse = PaginationHelper.CreatePagedResponse(pagedData, filter, totalRecords);
+            
+            if (pagedResponse.TotalRecords == 0)
+            {
+                pagedResponse.Message = "Page is empty";
+            }
+
+            return View(pagedResponse);
         }
 
         [HttpGet("{id}")]
@@ -65,11 +72,11 @@ namespace IT_Forum.Controllers
         {
             if (!IsArticleExist(id))
             {
-                // Return error
+                ModelState.AddModelError("Not Exist", "Post with this id is not exist");
             }
 
             Post article = await _context.Posts.FindAsync(id);
-            // Return article
+            return View(article);
         }
 
         [HttpPost]
@@ -77,7 +84,7 @@ namespace IT_Forum.Controllers
         {
             await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
-            // Return post back
+            return View(post);
         }
 
         [HttpPut("{id}")]
@@ -85,20 +92,19 @@ namespace IT_Forum.Controllers
         {
             if (!IsArticleExist(id))
             {
-                // Return error
+                ModelState.AddModelError("Not Exist", "Post with this id is not exist");
             }
             
-            User currentUser = await _userManager.FindByNameAsync(User.Identity?.Name);
             Post article = await _context.Posts.FindAsync(id);
-            if (!currentUser.OneToManyPosts.Contains(article) && !currentUser.IsAdmin)
+            if (!IsUserHaveAccessToPost(User.Identity, article))
             {
-                // Return error
+                ModelState.AddModelError("Not Exist", "You have no access to do this action");
             }
 
             _context.Entry(post).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            // Return article
+            return View(article);
         }
 
         [HttpDelete("{id}")]
@@ -106,22 +112,24 @@ namespace IT_Forum.Controllers
         {
             if (!IsArticleExist(id))
             {
-                // Return error
+                ModelState.AddModelError("Not Exist", "Post with this id is not exist");
             }
             
-            User currentUser = await _userManager.FindByNameAsync(User.Identity?.Name);
             Post article = await _context.Posts.FindAsync(id);
-            if (!currentUser.OneToManyPosts.Contains(article) && !currentUser.IsAdmin)
+            if (!IsUserHaveAccessToPost(User.Identity, article))
             {
-                // Return error
+                ModelState.AddModelError("Not Exist", "You have no access to do this action");
             }
             _context.Posts.Remove(article);
             await _context.SaveChangesAsync();
+            return RedirectToAction("GetArticles", "Article");
         }
 
         private bool IsArticleExist(int id) => _context.Posts.Any(e => e.PostId == id);
         
-        private bool IsUserAdmin(IIdentity user) => _userManager.FindByNameAsync(user.Name).Result.IsAdmin;
-
+        private bool IsUserHaveAccessToPost(IIdentity user, Post post) {
+            User currentUser = _userManager.FindByNameAsync(user.Name).Result;
+            return currentUser.IsAdmin || currentUser.OneToManyPosts.Contains(post);
+        }
     }
 }
