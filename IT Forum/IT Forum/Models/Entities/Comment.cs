@@ -8,6 +8,9 @@ namespace IT_Forum.Models.Entities
 {
     public class Comment
     {
+        [Key]
+        public int CommentId { get; set; }
+
         [Required]
         public String BodyOfComment { get; set; }
 
