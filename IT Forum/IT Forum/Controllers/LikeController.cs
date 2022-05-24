@@ -25,6 +25,7 @@ namespace IT_Forum.Controllers
             User user = CurrentUser(User.Identity);
             Like like = new Like
             {
+                Post = await _context.Posts.FindAsync(postId),
                 PostId = postId,
                 User = user,
                 UserId = user.Id

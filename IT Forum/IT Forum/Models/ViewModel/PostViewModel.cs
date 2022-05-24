@@ -13,14 +13,17 @@ namespace IT_Forum.Models.ViewModel
         public User Creator { get; set; }
         
         public bool IsLiked { get; set; }
+        
+        public bool IsHaveAccessToUpdate { get; set; }
 
-        public PostViewModel(Post post, User user = null)
+        public PostViewModel(Post post, bool isLiked, bool isHaveAccessToUpdate)
         {
             Id = post.PostId;
             Title = post.Title;
             Context = post.Context;
             Creator = post.Creator;
-            IsLiked = user != null && post.Likes != null && post.Likes.Exists(like => like.PostId == post.PostId && like.UserId == user.Id);
+            IsLiked = isLiked;
+            IsHaveAccessToUpdate = isHaveAccessToUpdate;
         }
     }
 }

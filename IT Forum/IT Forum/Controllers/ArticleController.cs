@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using IT_Forum.Helpers;
 using IT_Forum.Models.Entities;
 using IT_Forum.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace IT_Forum.Controllers
@@ -77,17 +78,22 @@ namespace IT_Forum.Controllers
             }
 
             Post article = await _context.Posts.FindAsync(id);
-            PostViewModel model = new PostViewModel(article, CurrentUser(User.Identity));
+            User user = CurrentUser(User.Identity);
+            bool isLiked = user != null && _context.Likes.Any(like => like.PostId == id && like.UserId == user.Id);
+            bool isHaveAccessToUpdate = user != null && IsUserHaveAccessToPost(User.Identity, article);
+            PostViewModel model = new PostViewModel(article, isLiked, isHaveAccessToUpdate);
             return View(model);
         }
         
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             return View();
         }
         
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(Post post)
         {
             post.Creator = CurrentUser(User.Identity);
@@ -96,9 +102,10 @@ namespace IT_Forum.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("GetArticle", new {id = post.PostId});
         }
-
-        [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int id, Post post)
+        
+        [HttpGet("Update/{id}")]
+        [Authorize]
+        public async Task<IActionResult> Update(int id)
         {
             if (!IsArticleExist(id))
             {
@@ -110,15 +117,43 @@ namespace IT_Forum.Controllers
             {
                 ModelState.AddModelError("Not Exist", "You have no access to do this action");
             }
-
-            _context.Entry(post).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
+            
             return View(article);
         }
+        
+        [HttpPost("Update/{id}")]
+        [Authorize]
+        public async Task<IActionResult> Update(int id, Post post)
+        {
+            Post article = await _context.Posts.FindAsync(id);
+            article.Context = post.Context;
+            article.Title = post.Title;
+            if (!IsUserHaveAccessToPost(User.Identity, article))
+            {
+                ModelState.AddModelError("Not Exist", "You have no access to do this action");
+            }
+            
+            _context.Entry(article).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!IsArticleExist(id))
+                {
+                    ModelState.AddModelError("Not Exist", "Post with this id is not exist");
+                    return NoContent();
+                }
+                throw;
+            }
+            
+            return RedirectToAction("GetArticle", new {id = id});
+        }
 
-        [HttpDelete("DeleteArticle/{id}")]
-        public async Task<IActionResult> DeleteArticle(int id)
+        [HttpPost("Delete/{id}")]
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
         {
             if (!IsArticleExist(id))
             {

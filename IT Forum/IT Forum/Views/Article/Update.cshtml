@@ -8,7 +8,7 @@
 
 
 <div>
-    <form method="PUT">
+    <form method="POST">
         <div asp-validation-summary="ModelOnly"></div>
         <hr />
         <dl class="row">
@@ -16,17 +16,17 @@
                 @Html.DisplayNameFor(model => model.Title)
             </dt>
             <dd class="col-10">
-                <input class="input-group-text w-100" asp-for="Title" />
-                @Html.DisplayFor(model => model.Title)
+                <input class="input-group-text w-100" asp-for="Title" value="@Model.Title"/>
             </dd>
             <dt class="col-2">
                 @Html.DisplayNameFor(model => model.Context)
             </dt>
             <dd class="col-10">
-                <textarea class="w-100" style="height: 500px" asp-for="Context"></textarea>
-                @Html.DisplayFor(model => model.Context)
+                <textarea class="w-100" style="height: 500px" asp-for="Context" value="@Model.Context"></textarea>
             </dd>
         </dl>
-        <button class="btn btn-light border-dark" type="submit">Add</button>
+        <div class="w-100">
+            <button class="btn btn-light border-dark text-center" type="submit">Update</button>
+        </div>
     </form>
 </div>

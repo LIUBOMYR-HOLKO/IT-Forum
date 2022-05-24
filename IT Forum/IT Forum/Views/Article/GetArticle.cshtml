@@ -4,17 +4,49 @@
     ViewData["Title"] = @Model.Title;
 }
 
-<h1 class="text-center">@Model.Title</h1>
+<style>
+    button{
+        background-color: white;
+        border: 0;
+    }
+</style>
+
+<div class="row">
+    <h1 class="col-9 text-center">@Model.Title</h1>
+    <div class="col-3 align-items-end">
+        <div class="row">
+            @if (@Model.IsHaveAccessToUpdate)
+            {
+                <div class="col-4">
+                    <form method="GET" action="@Url.Action("Update", "Article", new {id = @Model.Id})">
+                        <button type="submit">
+                            <i class="fa fa-edit" id="update"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="col-4">
+                    <form method="POST" action="@Url.Action("Delete", "Article", new {id = @Model.Id})">
+                    <button type="submit">
+                        <i class="fa fa-trash" id="update"></i>
+                    </button>
+                </form>
+                </div>
+            }
+
+            <div class="col-4">
+                <button id="like">
+                    <i class="fa fa-heart" id="heart"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div>
     @Model.Context
 </div>
 
-<div class="row">
-    <button id="like">
-        <i class="fa fa-heart" id="heart"></i>
-    </button>
-</div>
 
 <script>
     let heart = document.getElementById("heart");
@@ -24,13 +56,12 @@
     let like = document.getElementById("like");
     if (!heart.classList.contains("red")){
         like.onclick = function (){
-            location.href = '@Url.Action("Like", "Like")';
+            location.href = '@Url.Action("Like", "Like", new {postId = @Model.Id})';
         }
     }
     else{
         like.onclick = function (){
-           location.href = '@Url.Action("Dislike", "Like")';
+           location.href = '@Url.Action("Dislike", "Like", new {postId = @Model.Id})';
         }
     }
-        
 </script>
