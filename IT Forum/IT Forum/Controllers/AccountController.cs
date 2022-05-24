@@ -75,10 +75,8 @@ namespace IT_Forum.Controllers
                         await _signInManager.SignInAsync(user, false);
                         return RedirectToAction("Index", "Home");
                     }
-                    else
-                    {
-                        ModelState.AddModelError("", "Password doesn\'t matches");
-                    }
+
+                    ModelState.AddModelError("", "Password doesn\'t matches");
                 }
             }
             return View(model);

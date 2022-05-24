@@ -26,7 +26,7 @@ namespace IT_Forum.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("BodyOfComment")
+                    b.Property<string>("Context")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -42,12 +42,12 @@ namespace IT_Forum.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("IT_Forum.Models.Entities.Like", b =>
                 {
-                    b.Property<int>("CommentId")
+                    b.Property<int>("LikeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -58,13 +58,13 @@ namespace IT_Forum.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
-                    b.HasKey("CommentId");
+                    b.HasKey("LikeId");
 
                     b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Like");
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("IT_Forum.Models.Entities.Post", b =>

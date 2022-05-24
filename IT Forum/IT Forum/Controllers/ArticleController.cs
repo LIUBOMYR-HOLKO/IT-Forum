@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using IT_Forum.Helpers;
 using IT_Forum.Models.Entities;
+using IT_Forum.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace IT_Forum.Controllers
@@ -76,17 +77,18 @@ namespace IT_Forum.Controllers
             }
 
             Post article = await _context.Posts.FindAsync(id);
-            return View(article);
+            PostViewModel model = new PostViewModel(article, CurrentUser(User.Identity));
+            return View(model);
         }
         
         [HttpGet]
-        public async Task<IActionResult> CreateArticle()
+        public async Task<IActionResult> Create()
         {
             return View();
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateArticle(Post post)
+        public async Task<IActionResult> Create(Post post)
         {
             post.Creator = CurrentUser(User.Identity);
             post.UserId = post.Creator.Id;
@@ -95,8 +97,8 @@ namespace IT_Forum.Controllers
             return RedirectToAction("GetArticle", new {id = post.PostId});
         }
 
-        [HttpPut("UpdateArticle/{id}")]
-        public async Task<IActionResult> UpdateArticle(int id, Post post)
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(int id, Post post)
         {
             if (!IsArticleExist(id))
             {

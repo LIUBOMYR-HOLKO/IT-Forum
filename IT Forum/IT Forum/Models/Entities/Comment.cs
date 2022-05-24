@@ -12,7 +12,7 @@ namespace IT_Forum.Models.Entities
         public int CommentId { get; set; }
 
         [Required]
-        public String BodyOfComment { get; set; }
+        public String Context { get; set; }
 
         public int PostId { get; set; }
         public Post Post { get; set; }

@@ -1,10 +1,7 @@
 ﻿using IT_Forum.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace IT_Forum.Models
 {
@@ -17,6 +14,8 @@ namespace IT_Forum.Models
         
         public new DbSet<User> Users { get; set; }
         public new DbSet<Post> Posts { get; set; }
+        public new DbSet<Like> Likes { get; set; }
+        public new DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

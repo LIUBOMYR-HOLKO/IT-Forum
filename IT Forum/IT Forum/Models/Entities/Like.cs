@@ -9,7 +9,7 @@ namespace IT_Forum.Models.Entities
     public class Like
     {
         [Key]
-        public int CommentId { get; set; }
+        public int LikeId { get; set; }
         
         public String UserId { get; set; }
         public User User { get; set; }

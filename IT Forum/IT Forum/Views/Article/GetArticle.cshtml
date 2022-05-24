@@ -1,32 +1,36 @@
-@model IT_Forum.Models.Entities.Post
+@model IT_Forum.Models.ViewModel.PostViewModel
 
 @{
-    ViewData["Title"] = "New Post";
+    ViewData["Title"] = @Model.Title;
 }
 
-<h1>Create new post</h1>
-
+<h1 class="text-center">@Model.Title</h1>
 
 <div>
-    <form method="post">
-        <div asp-validation-summary="ModelOnly"></div>
-        <hr />
-        <dl class="row">
-            <dt class="col-2">
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
-            <dd class="col-10">
-                <input class="input-group-text w-100" asp-for="Title" />
-                @Html.DisplayFor(model => model.Title)
-            </dd>
-            <dt class="col-2">
-                @Html.DisplayNameFor(model => model.Context)
-            </dt>
-            <dd class="col-10">
-                <textarea class="w-100" style="height: 500px" asp-for="Context"></textarea>
-                @Html.DisplayFor(model => model.Context)
-            </dd>
-        </dl>
-        <button class="btn btn-light border-dark" type="submit">Add</button>
-    </form>
+    @Model.Context
 </div>
+
+<div class="row">
+    <button id="like">
+        <i class="fa fa-heart" id="heart"></i>
+    </button>
+</div>
+
+<script>
+    let heart = document.getElementById("heart");
+    if (@Json.Serialize(Model.IsLiked)){
+        heart.classList.toggle('red');
+    }
+    let like = document.getElementById("like");
+    if (!heart.classList.contains("red")){
+        like.onclick = function (){
+            location.href = '@Url.Action("Like", "Like")';
+        }
+    }
+    else{
+        like.onclick = function (){
+           location.href = '@Url.Action("Dislike", "Like")';
+        }
+    }
+        
+</script>
