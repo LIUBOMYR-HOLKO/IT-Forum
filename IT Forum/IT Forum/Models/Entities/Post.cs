@@ -17,10 +17,15 @@ namespace IT_Forum.Models.Entities
         public String BodyOfPost { get; set; }
 
         public String UserId { get; set; }
-        public User User { get; set; }
+        public User Creator { get; set; }
 
         public ICollection<User> Users { get; set; }
         public List<Comment> Comments { get; set; }
         public List<Like> Likes { get; set; }
+
+        public bool IsMatch(string value)
+        {
+            return Title.Contains(value);
+        }
     }
 }

@@ -13,15 +13,15 @@ namespace IT_Forum.Models
         public Context(DbContextOptions<Context> options)
             : base(options)
         {
-            Database.EnsureCreated();
         }
+        
         public new DbSet<User> Users;
         public DbSet<Post> Posts;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Post>()
-                .HasOne(post => post.User)
+                .HasOne(post => post.Creator)
                 .WithMany(user => user.OneToManyPosts)
                 .HasForeignKey(post => post.UserId);
 

@@ -10,6 +10,8 @@ namespace IT_Forum.Models
 {
     public class User : IdentityUser
     {
+        public bool IsAdmin { get; set; }
+        
         public List<Post> OneToManyPosts { get; set; }
         public ICollection<Post> ManyToManyPosts { get; set; }
         public List<Comment> Comments { get; set; }
