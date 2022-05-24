@@ -67,7 +67,7 @@ namespace IT_Forum.Controllers
             return View(pagedResponse);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetArticle/{id}")]
         public async Task<IActionResult> GetArticle(int id)
         {
             if (!IsArticleExist(id))
@@ -78,16 +78,24 @@ namespace IT_Forum.Controllers
             Post article = await _context.Posts.FindAsync(id);
             return View(article);
         }
-
+        
+        [HttpGet]
+        public async Task<IActionResult> CreateArticle()
+        {
+            return View();
+        }
+        
         [HttpPost]
         public async Task<IActionResult> CreateArticle(Post post)
         {
+            post.Creator = CurrentUser(User.Identity);
+            post.UserId = post.Creator.Id;
             await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
-            return View(post);
+            return RedirectToAction("GetArticle", new {id = post.PostId});
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateArticle/{id}")]
         public async Task<IActionResult> UpdateArticle(int id, Post post)
         {
             if (!IsArticleExist(id))
@@ -107,7 +115,7 @@ namespace IT_Forum.Controllers
             return View(article);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteArticle/{id}")]
         public async Task<IActionResult> DeleteArticle(int id)
         {
             if (!IsArticleExist(id))
@@ -128,8 +136,10 @@ namespace IT_Forum.Controllers
         private bool IsArticleExist(int id) => _context.Posts.Any(e => e.PostId == id);
         
         private bool IsUserHaveAccessToPost(IIdentity user, Post post) {
-            User currentUser = _userManager.FindByNameAsync(user.Name).Result;
+            User currentUser = CurrentUser(user);
             return currentUser.IsAdmin || currentUser.OneToManyPosts.Contains(post);
         }
+
+        private User CurrentUser(IIdentity user) => _userManager.FindByNameAsync(user.Name).Result;
     }
 }
