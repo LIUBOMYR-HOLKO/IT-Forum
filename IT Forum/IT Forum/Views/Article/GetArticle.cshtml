@@ -1,0 +1,32 @@
+@model IT_Forum.Models.Entities.Post
+
+@{
+    ViewData["Title"] = "New Post";
+}
+
+<h1>Create new post</h1>
+
+
+<div>
+    <form method="post">
+        <div asp-validation-summary="ModelOnly"></div>
+        <hr />
+        <dl class="row">
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd class="col-10">
+                <input class="input-group-text w-100" asp-for="Title" />
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt class="col-2">
+                @Html.DisplayNameFor(model => model.Context)
+            </dt>
+            <dd class="col-10">
+                <textarea class="w-100" style="height: 500px" asp-for="Context"></textarea>
+                @Html.DisplayFor(model => model.Context)
+            </dd>
+        </dl>
+        <button class="btn btn-light border-dark" type="submit">Add</button>
+    </form>
+</div>
