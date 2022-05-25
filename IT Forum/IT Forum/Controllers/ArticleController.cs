@@ -172,11 +172,14 @@ namespace IT_Forum.Controllers
             return RedirectToAction("GetArticles", "Article");
         }
 
-        private bool IsArticleExist(int id) => _context.Posts.FindAsync(id) != null;
+        private bool IsArticleExist(int id) => _context.Posts.Any(e => e.PostId == id);
         
         private bool IsUserHaveAccessToPost(IIdentity user, Post post) {
             User currentUser = CurrentUser(user);
-            return currentUser.IsAdmin || currentUser.OneToManyPosts.Contains(post);
+            if (currentUser.IsAdmin)
+                return true;
+
+            return post.Creator == currentUser;
         }
 
         private User CurrentUser(IIdentity user) => _userManager.FindByNameAsync(user.Name).Result;

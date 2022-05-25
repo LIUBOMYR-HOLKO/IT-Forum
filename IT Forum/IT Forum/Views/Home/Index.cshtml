@@ -10,10 +10,10 @@
     {
     @foreach (var post in Model)
     {
-        <a class="list-group-item list-group-item-action" asp-controller="Post" asp-action="Details" asp-route-id="@post.Id">
+        <a class="list-group-item list-group-item-action" asp-controller="Article" asp-action="GetArticle" asp-route-id="@post.Id">
             <h2 style="color:cornflowerblue;">@post.Title</h2>
             <p>@post.Context</p>
-            <p>Posted by @post.LikeCount likes, @post.CommentCount comments</p>
+            <p>@post.LikeCount likes, @post.CommentCount comments</p>
             <p>Posted by @post.Creator.Email on 25.05.2022</p>
         </a>
     }

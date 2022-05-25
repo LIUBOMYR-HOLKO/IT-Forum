@@ -33,7 +33,7 @@ namespace IT_Forum.Controllers
                 page = 1;
 
             var storage = new List<PostViewModel>();
-            foreach (var post in _context.Posts.ToList())
+            foreach (var post in _context.Posts.OrderByDescending(post => post.PostId).ToList())
             {
                 var user = _userManager.Users.FirstOrDefault(u => u.Id == post.UserId);
                 post.Creator = user;
