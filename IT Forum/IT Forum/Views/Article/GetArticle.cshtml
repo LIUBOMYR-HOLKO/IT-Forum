@@ -33,12 +33,16 @@
                 </form>
                 </div>
             }
+            
+            @if (@User.Identity is {IsAuthenticated: true })
+            {
+                <div class="col-4">
+                    <button id="like">
+                        <i class="fa fa-heart" id="heart"></i>
+                    </button>
+                </div>
+            }
 
-            <div class="col-4">
-                <button id="like">
-                    <i class="fa fa-heart" id="heart"></i>
-                </button>
-            </div>
         </div>
     </div>
 </div>
@@ -68,8 +72,9 @@
     <h2 class="text-center"> Comments </h2>
     @foreach (var comment in Model.Comments)
     {
-        <div class="row w-100 p-3 my-3" style="border: 1px solid black">
-            @comment.Context
+        <div class="w-100 p-3 my-3" style="border: 1px solid black">
+            <div class="row">@comment.Context</div>
+            <div class="row">(@comment.User?.Email on 25.05.2022)</div>
         </div>
     }
 </div>

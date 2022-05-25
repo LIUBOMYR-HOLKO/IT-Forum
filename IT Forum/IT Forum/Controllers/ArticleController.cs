@@ -172,7 +172,7 @@ namespace IT_Forum.Controllers
             return RedirectToAction("GetArticles", "Article");
         }
 
-        private bool IsArticleExist(int id) => _context.Posts.Any(e => e.PostId == id);
+        private bool IsArticleExist(int id) => _context.Posts.FirstOrDefault(e => e.PostId == id) is not null;
         
         private bool IsUserHaveAccessToPost(IIdentity user, Post post) {
             User currentUser = CurrentUser(user);
@@ -182,6 +182,9 @@ namespace IT_Forum.Controllers
             return post.Creator == currentUser;
         }
 
-        private User CurrentUser(IIdentity user) => _userManager.FindByNameAsync(user.Name).Result;
+        private User CurrentUser(IIdentity user)
+        {
+            return user.Name is null ? null : _userManager.FindByNameAsync(user.Name).Result;
+        }
     }
 }
