@@ -81,7 +81,9 @@ namespace IT_Forum.Controllers
             User user = CurrentUser(User.Identity);
             bool isLiked = user != null && _context.Likes.Any(like => like.PostId == id && like.UserId == user.Id);
             bool isHaveAccessToUpdate = user != null && IsUserHaveAccessToPost(User.Identity, article);
-            PostViewModel model = new PostViewModel(article, isLiked, isHaveAccessToUpdate);
+            List<Comment> comments = _context.Comments.Where(comment => comment.PostId == id && comment.Context != "")
+                .OrderByDescending(comment => comment.CommentId).ToList();
+            PostViewModel model = new PostViewModel(article, isLiked, isHaveAccessToUpdate, comments);
             return View(model);
         }
         
@@ -170,7 +172,7 @@ namespace IT_Forum.Controllers
             return RedirectToAction("GetArticles", "Article");
         }
 
-        private bool IsArticleExist(int id) => _context.Posts.Any(e => e.PostId == id);
+        private bool IsArticleExist(int id) => _context.Posts.FindAsync(id) != null;
         
         private bool IsUserHaveAccessToPost(IIdentity user, Post post) {
             User currentUser = CurrentUser(user);

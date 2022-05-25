@@ -43,8 +43,35 @@
     </div>
 </div>
 
-<div>
-    @Model.Context
+<div class="row">
+    <div class="col-12">
+        @Model.Context
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-2"></div>
+    <div class="col-8">
+        @using (Html.BeginForm("Comment", "Comment"))
+        {
+            @Html.Hidden("postId", @Model.Id)
+            @Html.TextArea("content", "", new {@class="w-100", @style="height: 100px"})
+            <div class="w-100 text-center">
+                <button class="btn btn-light border-dark text-center" type="submit">Comment</button>
+            </div>
+        }
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<div class="container mt-5">
+    <h2 class="text-center"> Comments </h2>
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="row w-100 p-3 my-3" style="border: 1px solid black">
+            @comment.Context
+        </div>
+    }
 </div>
 
 

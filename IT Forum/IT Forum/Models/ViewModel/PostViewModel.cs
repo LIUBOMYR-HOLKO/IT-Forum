@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using IT_Forum.Models.Entities;
 
 namespace IT_Forum.Models.ViewModel
@@ -15,8 +16,10 @@ namespace IT_Forum.Models.ViewModel
         public bool IsLiked { get; set; }
         
         public bool IsHaveAccessToUpdate { get; set; }
+        
+        public List<Comment> Comments { get; set; }
 
-        public PostViewModel(Post post, bool isLiked, bool isHaveAccessToUpdate)
+        public PostViewModel(Post post, bool isLiked, bool isHaveAccessToUpdate, List<Comment> comments)
         {
             Id = post.PostId;
             Title = post.Title;
@@ -24,6 +27,7 @@ namespace IT_Forum.Models.ViewModel
             Creator = post.Creator;
             IsLiked = isLiked;
             IsHaveAccessToUpdate = isHaveAccessToUpdate;
+            Comments = comments;
         }
     }
 }
