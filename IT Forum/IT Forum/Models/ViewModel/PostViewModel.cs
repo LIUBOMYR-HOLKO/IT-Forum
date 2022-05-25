@@ -19,6 +19,10 @@ namespace IT_Forum.Models.ViewModel
         
         public List<Comment> Comments { get; set; }
 
+        public int LikeCount { get; set; }
+
+        public int CommentCount { get; set; }
+
         public PostViewModel(Post post, bool isLiked, bool isHaveAccessToUpdate, List<Comment> comments)
         {
             Id = post.PostId;
@@ -28,6 +32,16 @@ namespace IT_Forum.Models.ViewModel
             IsLiked = isLiked;
             IsHaveAccessToUpdate = isHaveAccessToUpdate;
             Comments = comments;
+        }
+
+        public PostViewModel(Post post, int likes, int coments)
+        {
+            Id = post.PostId;
+            Title = post.Title;
+            Context = post.Context;
+            Creator = post.Creator;
+            LikeCount = likes;
+            CommentCount = coments;
         }
     }
 }

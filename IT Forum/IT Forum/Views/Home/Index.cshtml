@@ -1,7 +1,43 @@
-﻿@{
+﻿@model PaginationList<IT_Forum.Models.ViewModel.PostViewModel>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+<h2>Posts</h2>
+
+<div class="list-group">
+    @if(@Model.Any())
+    {
+    @foreach (var post in Model)
+    {
+        <a class="list-group-item list-group-item-action" asp-controller="Post" asp-action="Details" asp-route-id="@post.Id">
+            <h2 style="color:cornflowerblue;">@post.Title</h2>
+            <p>@post.Context</p>
+            <p>Posted by @post.LikeCount likes, @post.CommentCount comments</p>
+            <p>Posted by @post.Creator.Email on 25.05.2022</p>
+        </a>
+    }
+    }
+    else
+    {
+        <h2>There are no posts yet!</h2>
+    }
+</div>
+<div class="pagination-class">
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "active";
+        var nexDisabled = !Model.HasNextPage ? "disabled" : "active";
+    }
+    
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageIndex-1)"
+       class="@prevDisabled">
+        Previous
+    </a>
+    
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageIndex+1)"
+           class="@nexDisabled">
+            Next
+        </a>
 </div>
