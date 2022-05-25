@@ -37,7 +37,11 @@ namespace IT_Forum.Controllers
             {
                 var user = _userManager.Users.FirstOrDefault(u => u.Id == post.UserId);
                 post.Creator = user;
-                storage.Add(new PostViewModel(post, false, false));
+                
+                var likes = _context.Likes.Where(l => l.PostId == post.PostId).ToList().Count;
+                var comments = _context.Comments.Where(c => c.PostId == post.PostId).ToList().Count;
+
+                storage.Add(new PostViewModel(post, likes, comments));
             }
             var pageSize = 4;
 
