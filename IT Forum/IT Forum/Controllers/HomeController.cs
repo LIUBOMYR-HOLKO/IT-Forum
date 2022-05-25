@@ -1,4 +1,7 @@
-﻿using IT_Forum.Models;
+﻿using IT_Forum.Helpers;
+using IT_Forum.Models;
+using IT_Forum.Models.ViewModel;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,14 +16,32 @@ namespace IT_Forum.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly Context _context;
+
+        private readonly UserManager<User> _userManager;
+
+        public HomeController(ILogger<HomeController> logger, Context context, UserManager<User> userManager)
         {
             _logger = logger;
+            _context = context;
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            return View();
+            if (page is not null && page <= 1)
+                page = 1;
+
+            var storage = new List<PostViewModel>();
+            foreach (var post in _context.Posts.ToList())
+            {
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == post.UserId);
+                post.Creator = user;
+                storage.Add(new PostViewModel(post, false, false));
+            }
+            var pageSize = 4;
+
+            return View(await PaginationList<PostViewModel>.CreateAsync(storage, page ?? 1, pageSize));
         }
 
         public IActionResult Privacy()
